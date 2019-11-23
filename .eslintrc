@@ -1,0 +1,19 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": [
+    "airbnb-base", 
+    "eslint:recommended",
+    "plugin:prettier/recommended", 
+    "plugin:react/recommended"
+  ],
+  "parser": "babel-eslint",
+  "rules": {
+    "import/first": "off",
+    "comma-dangle": ["error", "always-multiline"],
+    "quotes": ["error", "single", { "allowTemplateLiterals": true }],
+    "react/prop-types": "off",
+    "import/prefer-default-export": "off"
+  }
+}
