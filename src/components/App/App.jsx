@@ -4,6 +4,10 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import Piece from '../Piece/Piece';
 import PieceTarget from '../PieceTarget/PieceTarget';
+import Score from '../Score/Score';
+import SoughtPiece from '../SoughtPiece/SoughtPiece';
+import { EventBus } from './../../common/EventBus/EventBus';
+import { EventTypes } from './../../common/EventBus/EventTypes';
 import './app.less';
 
 export const App = () => {
@@ -15,7 +19,14 @@ export const App = () => {
     'assets/zoovu-logo/5.png',
   ];
 
+  const [piecesUnrevealed, setPiecesUnrevealed] = useState([...pieces]);
   const [piecesMatched, setPiecesMatched] = useState([]);
+  const [gameStarted, setGameStarted] = useState(false);
+
+  const onPieceClick = () => {
+    EventBus.emit(EventTypes.GameStart);
+    setGameStarted(true);
+  };
 
   const checkIfMatchedCorrectly = (index, name) => {
     console.log('checkIfMatchedCorrectly', index, name);
@@ -38,22 +49,31 @@ export const App = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="app-container">
-        <div>
-          {pieces.map((url, index) => (
-            <Piece
-              imageUrl={url}
-              key={index}
-            />
-          ))}
+      <div className="appContainer">
+        <div className="gameArea">
+          <div className="gameArea__pieces">
+            {pieces.map((url, index) => (
+              <Piece
+                imageUrl={url}
+                onClick={!gameStarted ? onPieceClick : null}
+                key={index}
+              />
+            ))}
+          </div>
+          <div className="gameArea__targets">
+            {pieces.map((url, index) => (
+              <PieceTarget
+                onDrop={item => handleDrop(index, item)}
+                key={index}
+              />
+            ))}
+          </div>
         </div>
-        <div>
-          {pieces.map((url, index) => (
-            <PieceTarget
-              onDrop={item => handleDrop(index, item)}
-              key={index}
-            />
-          ))}
+        <div className="infoArea">
+          <Score />
+          <SoughtPiece 
+            sougthPieces={piecesUnrevealed}
+          />
         </div>
       </div>
     </DndProvider>

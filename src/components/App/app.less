@@ -1,3 +1,22 @@
-.app-container {
+.appContainer {
   margin: 20px 20px;
+  display: flex;
+
+  .gameArea {
+    width: 75%;
+    padding: 25px;
+
+    &__pieces, &__targets {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .infoArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    padding: 10px;
+  }
 }

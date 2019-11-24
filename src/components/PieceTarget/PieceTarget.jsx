@@ -8,7 +8,7 @@ const PieceTarget = ({
   onDrop,
 }) => {
   const [{ isOver, canDrop }, drop] = useDrop({
-    accept: ItemTypes.PIECE,
+    accept: ItemTypes.Piece,
     drop: onDrop,
     collect: monitor => ({
       isOver: monitor.isOver(),
