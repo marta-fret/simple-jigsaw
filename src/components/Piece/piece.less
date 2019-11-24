@@ -3,6 +3,7 @@
   width: auto;
   margin: 10px;
   background-color: #3c0078;
+  border: 2px solid white;
 
   &--isRevealed {
     background-color: white;
@@ -11,6 +12,13 @@
   &--isDragging {
     opacity: 0.5;
     background-color: #EEEEEE;
+  }
+
+  &--isWrong:active {
+    border: 2px solid red;
+    img {
+      visibility: hidden;
+    }
   }
 
   img {

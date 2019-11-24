@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { EventBus } from '../../common/EventBus/EventBus';
+import { EventTypes } from './../../common/EventBus/EventTypes';
 import './soughtPiece.less';
 
-const SoughtPiece = ({ sougthPieces }) => {
+const SoughtPiece = ({ sougthPieces, onChange }) => {
   const [soughtPiece, setSoughtPiece] = useState();
 
-  const getRandomPiece = () => {
-    const index = Math.ceil(Math.random() * sougthPieces.length) - 1;
-    return sougthPieces[index];
+  const getRandomPiece = (prevSoughtPiece) => {
+    const pieces = sougthPieces.length > 1 
+      ? sougthPieces.filter(piece => piece !== prevSoughtPiece)
+      : [...sougthPieces];
+    const index = Math.ceil(Math.random() * pieces.length) - 1;
+    return pieces[index];
   };
 
+  const changeSoughtPiece = () => setSoughtPiece((prevSoughtPiece) => {
+    const newPiece = getRandomPiece(prevSoughtPiece);
+    onChange(newPiece);
+    return newPiece;
+  });
+
   useEffect(() => {
-    setSoughtPiece(getRandomPiece());
+    changeSoughtPiece();
+    EventBus.subscribe(EventTypes.WrongPiece, changeSoughtPiece);
+    return () => {
+      EventBus.unsubscribe(EventTypes.WrongPiece, changeSoughtPiece);
+    };
   }, [sougthPieces]);
 
   return (

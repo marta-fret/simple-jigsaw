@@ -21,11 +21,21 @@ export const App = () => {
 
   const [piecesUnrevealed, setPiecesUnrevealed] = useState([...pieces]);
   const [piecesMatched, setPiecesMatched] = useState([]);
+  const [soughtPiece, setSoughtPiece] = useState();
   const [gameStarted, setGameStarted] = useState(false);
 
-  const onPieceClick = () => {
-    EventBus.emit(EventTypes.GameStart);
-    setGameStarted(true);
+  const onPieceTouched = (url) => {
+    if (!gameStarted) {
+      EventBus.emit(EventTypes.GameStart);
+      setGameStarted(true);
+    }
+    if (url !== soughtPiece) {
+      EventBus.emit(EventTypes.WrongPiece);
+    }
+  };
+
+  const onSoughtPieceChanged = (piece) => {
+    setSoughtPiece(piece);
   };
 
   const checkIfMatchedCorrectly = (index, name) => {
@@ -34,7 +44,8 @@ export const App = () => {
   };
 
   const handleDrop = useCallback(
-    (index, piece) => {
+    (index, piece, rest) => {
+      console.log('handleDrop', index, piece, rest);
       const { name } = piece;
       setPiecesMatched(
         update(piecesMatched, {
@@ -55,7 +66,8 @@ export const App = () => {
             {pieces.map((url, index) => (
               <Piece
                 imageUrl={url}
-                onClick={!gameStarted ? onPieceClick : null}
+                onMouseDown={() => onPieceTouched(url)}
+                canDrag={soughtPiece === url}
                 key={index}
               />
             ))}
@@ -63,7 +75,7 @@ export const App = () => {
           <div className="gameArea__targets">
             {pieces.map((url, index) => (
               <PieceTarget
-                onDrop={item => handleDrop(index, item)}
+                onDrop={(item, ...rest) => handleDrop(index, item, rest)}
                 key={index}
               />
             ))}
@@ -73,6 +85,7 @@ export const App = () => {
           <Score />
           <SoughtPiece 
             sougthPieces={piecesUnrevealed}
+            onChange={onSoughtPieceChanged}
           />
         </div>
       </div>

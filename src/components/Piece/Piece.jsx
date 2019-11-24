@@ -4,9 +4,10 @@ import classNames from 'classnames';
 import { ItemTypes } from '../../common/ItemTypes';
 import './piece.less';
 
-const Piece = ({ imageUrl, onClick }) => {
+const Piece = ({ imageUrl, onMouseDown, canDrag }) => {
   const [{ isDragging }, drag] = useDrag({
     item: { type: ItemTypes.Piece },
+    canDrag,
     collect: monitor => ({
       isDragging: monitor.isDragging(),
     }),
@@ -17,8 +18,9 @@ const Piece = ({ imageUrl, onClick }) => {
       ref={drag}
       className={classNames('piece', {
         'piece--isDragging': isDragging,
+        'piece--isWrong': !canDrag,
       })}
-      onClick={onClick}
+      onMouseDown={onMouseDown}
     >
       <img src={imageUrl} alt="piece"/>
     </div>

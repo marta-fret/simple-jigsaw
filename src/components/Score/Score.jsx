@@ -25,15 +25,18 @@ const Score = () => {
     timer = undefined;
   };
 
-  EventBus.subscribe(EventTypes.GameStart, startCounting);
-  EventBus.subscribe(EventTypes.WrongPiece, onWrongPiece);
-  EventBus.subscribe(EventTypes.GameOver, stopCounting);
+  useEffect(() => {
+    EventBus.subscribe(EventTypes.GameStart, startCounting);
+    EventBus.subscribe(EventTypes.WrongPiece, onWrongPiece);
+    EventBus.subscribe(EventTypes.GameOver, stopCounting);
 
-  useEffect(() => () => {
-    EventBus.unsubscribe(EventTypes.GameStart, startCounting);
-    EventBus.unsubscribe(EventTypes.WrongPiece, onWrongPiece);
-    EventBus.unsubscribe(EventTypes.GameOver, stopCounting);
-  });
+    return () => {
+      EventBus.unsubscribe(EventTypes.GameStart, startCounting);
+      EventBus.unsubscribe(EventTypes.WrongPiece, onWrongPiece);
+      EventBus.unsubscribe(EventTypes.GameOver, stopCounting);
+      clearInterval(timer);
+    };
+  }, []);
 
   return (
     <>

@@ -4,7 +4,7 @@ export class EventBus {
   static subscribe = (eventType, callback) => {
     if (!subscribers[eventType]) {
       subscribers[eventType] = [callback];
-    } else if (subscribers[eventType].indexOf(callback) !== -1) {
+    } else if (subscribers[eventType].indexOf(callback) === -1) {
       subscribers[eventType].push(callback);
     }
   }
