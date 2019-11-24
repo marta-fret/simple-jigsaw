@@ -4,26 +4,30 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/app.js',
+  entry: './src/index.jsx',
   output: {
     path: path.join(__dirname, 'build'),
-    filename: 'app.js',
-    publicPath: '/'
+    filename: 'index.js',
+    publicPath: '/',
   },
   mode: 'development',
+  resolve: {
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+    extensions: ['.js', '.jsx'],
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: { loader: 'babel-loader' }
+        use: { loader: 'babel-loader' },
       },
       {
         test: /\.less|\.css$/,
         use: [
           'style-loader',
           'css-loader',
-          'less-loader'
+          'less-loader',
         ],
       },
     ],
@@ -35,19 +39,19 @@ module.exports = {
     open: true,
     hot: true,
     watchOptions: {
-      ignored: /node_modules/
-    }
+      ignored: /node_modules/,
+    },
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'app.css'
+      filename: 'index.css',
     }),
     new HtmlWebPackPlugin({
       template: './public/index.html',
-      filename: 'i-want-to-play-a-game.html'
+      filename: 'i-want-to-play-a-game.html',
     }),
     new CopyPlugin([
       { from: 'public/assets', to: 'assets' },
     ]),
-  ]
+  ],
 };

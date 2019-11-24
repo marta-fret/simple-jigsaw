@@ -6,43 +6,47 @@ const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: './src/app.js',
+  entry: './src/index.jsx',
   output: {
     path: path.join(__dirname, 'build'),
-    filename: 'app.js',
-    publicPath: '/'
+    filename: 'index.js',
+    publicPath: '/',
   },
   mode: 'production',
+  resolve: {
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+    extensions: ['.js', '.jsx'],
+  },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: { loader: 'babel-loader' }
+        use: { loader: 'babel-loader' },
       },
       {
         test: /\.less|\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'less-loader'
+          'less-loader',
         ],
       },
     ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'app.css'
+      filename: 'index.css',
     }),
     new HtmlWebPackPlugin({
       template: './public/index.html',
       filename: 'i-want-to-play-a-game.html',
-      inlineSource: '.(js|css)$'
+      inlineSource: '.(js|css)$',
     }),
     // new HtmlWebpackInlineSourcePlugin(),
     new CopyPlugin([
       { from: 'public/assets', to: 'assets' },
     ]),
     new CleanWebpackPlugin(),
-  ]
+  ],
 };

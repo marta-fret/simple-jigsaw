@@ -20,8 +20,12 @@
     "Edge >= 44"
   ],
   "dependencies": {
+    "classnames": "2.2.6",
+    "immutability-helper": "3.0.1",
     "normalize.css": "8.0.1",
     "react": "16.12.0",
+    "react-dnd": "9.4.0",
+    "react-dnd-html5-backend": "9.4.0",
     "react-dom": "16.12.0"
   },
   "devDependencies": {
