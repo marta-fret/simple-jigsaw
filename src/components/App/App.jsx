@@ -2,34 +2,32 @@ import React, { useState, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
+import shuffle from 'lodash.shuffle';
 import Piece from '../Piece/Piece';
 import PieceTarget from '../PieceTarget/PieceTarget';
 import Score from '../Score/Score';
 import SoughtPiece from '../SoughtPiece/SoughtPiece';
 import { EventBus } from './../../common/EventBus/EventBus';
 import { EventTypes } from './../../common/EventBus/EventTypes';
+import { mapIndexes } from '../../common/arrayUtils';
 import './app.less';
 
-export const App = () => {
-  const pieces = [
-    'assets/zoovu-logo/1.png',
-    'assets/zoovu-logo/2.png',
-    'assets/zoovu-logo/3.png',
-    'assets/zoovu-logo/4.png',
-    'assets/zoovu-logo/5.png',
-  ];
-
-  const [piecesUnrevealed, setPiecesUnrevealed] = useState([...pieces]);
-  const [piecesMatched, setPiecesMatched] = useState([]);
-  const [soughtPiece, setSoughtPiece] = useState();
+export const App = ({ pieces }) => {
   const [gameStarted, setGameStarted] = useState(false);
+  const [piecesShuffled] = useState(shuffle(pieces));
+  const [shuffledToOrdered] = useState(mapIndexes(piecesShuffled, pieces));
+
+  const [piecesUnrevealed, setPiecesUnrevealed] = useState([...piecesShuffled]);
+  const [piecesMatched, setPiecesMatched] = useState([]); 
+  const [piecesTargetCoords, setPiecesTargetCoords] = useState([]);
+  const [soughtPiece, setSoughtPiece] = useState();
 
   const onPieceTouched = (url) => {
     if (!gameStarted) {
       EventBus.emit(EventTypes.GameStart);
       setGameStarted(true);
     }
-    if (url !== soughtPiece) {
+    if (url !== soughtPiece && piecesUnrevealed.indexOf(url) !== -1) {
       EventBus.emit(EventTypes.WrongPiece);
     }
   };
@@ -38,24 +36,34 @@ export const App = () => {
     setSoughtPiece(piece);
   };
 
-  const checkIfMatchedCorrectly = (index, name) => {
-    console.log('checkIfMatchedCorrectly', index, name);
-    return true;
-  };
-
   const handleDrop = useCallback(
-    (index, piece, rest) => {
-      console.log('handleDrop', index, piece, rest);
-      const { name } = piece;
-      setPiecesMatched(
-        update(piecesMatched, {
-          [index]: {
-            $set: [checkIfMatchedCorrectly(index, name)],
+    (pieceIndex, targetIndex, targetCoordinates) => {
+      const isMatched = shuffledToOrdered[pieceIndex] === targetIndex;
+
+      if (isMatched) {
+        if (piecesMatched.indexOf(pieceIndex) !== -1) return;
+        if (piecesMatched.length === piecesShuffled.length - 1) {
+          EventBus.emit(EventTypes.GameOver);
+        }
+        setPiecesMatched([...piecesMatched, piecesShuffled[pieceIndex]]);
+      } else {
+        setPiecesMatched(piecesMatched.filter(item => item !== piecesShuffled[pieceIndex]));
+      }
+
+      const newPiecesUnrevealed = piecesUnrevealed.filter(item => item !== piecesShuffled[pieceIndex]);
+      if (newPiecesUnrevealed.length !== piecesUnrevealed.length) {
+        setPiecesUnrevealed(newPiecesUnrevealed);
+      }
+
+      setPiecesTargetCoords(
+        update(piecesTargetCoords, {
+          [pieceIndex]: {
+            $set: targetCoordinates,
           },
         }),
       );
     },
-    [piecesMatched],
+    [piecesMatched, piecesUnrevealed, piecesTargetCoords],
   );
 
   return (
@@ -63,19 +71,23 @@ export const App = () => {
       <div className="appContainer">
         <div className="gameArea">
           <div className="gameArea__pieces">
-            {pieces.map((url, index) => (
-              <Piece
-                imageUrl={url}
-                onMouseDown={() => onPieceTouched(url)}
-                canDrag={soughtPiece === url}
-                key={index}
-              />
+            {piecesShuffled.map((url, index) => (
+              <div key={index}>
+                <Piece
+                  imageUrl={url}
+                  index={index}                  
+                  onMouseDown={() => onPieceTouched(url)}
+                  canDrag={soughtPiece === url || !!piecesTargetCoords[index]}
+                  targetCoords={piecesTargetCoords[index]}
+                />
+              </div>
             ))}
           </div>
           <div className="gameArea__targets">
-            {pieces.map((url, index) => (
+            {piecesShuffled.map((url, index) => (
               <PieceTarget
-                onDrop={(item, ...rest) => handleDrop(index, item, rest)}
+                onDrop={handleDrop}
+                index={index}
                 key={index}
               />
             ))}

@@ -6,6 +6,7 @@ import './score.less';
 const Score = () => {
   let timer;
   const [score, setScore] = useState(0);
+  const [showCongrats, setShowCongrats] = useState(false);
 
   const startCounting = () => {
     if (timer) return;
@@ -20,9 +21,10 @@ const Score = () => {
   };
 
   const stopCounting = () => {
-    if (timer) return;
+    if (!timer) return;
     clearInterval(timer);
     timer = undefined;
+    setShowCongrats(true);
   };
 
   useEffect(() => {
@@ -44,6 +46,9 @@ const Score = () => {
       <p className="score__value">
         {score} <span className="score__unit">sec.</span>  
       </p>
+      {showCongrats && (
+        <p>Congratulations :-)</p>
+      )}
     </>
   );
 };

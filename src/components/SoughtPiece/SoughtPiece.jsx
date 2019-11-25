@@ -30,10 +30,14 @@ const SoughtPiece = ({ sougthPieces, onChange }) => {
 
   return (
     <>
-      <h2 className="soughtPiece__label">Find this card:</h2>
-      <div className="soughtPiece__piece">
-        <img src={soughtPiece} alt="sougth piece"/>
-      </div>
+      {soughtPiece && (
+        <>
+          <h2 className="soughtPiece__label">Find this card:</h2>
+          <div className="soughtPiece__piece">
+            <img src={soughtPiece} alt="sougth piece"/>
+          </div>
+        </>
+      )}
     </>
   );
 };
