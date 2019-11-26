@@ -60,9 +60,9 @@ export const App = ({ pieces }) => {
         if (piecesMatched.length === piecesShuffled.length - 1) {
           handleGameOver();
         }
-        setPiecesMatched([...piecesMatched, piecesShuffled[pieceIndex]]);
+        setPiecesMatched(prevPiecesMatched => [...prevPiecesMatched, piecesShuffled[pieceIndex]]);
       } else {
-        setPiecesMatched(piecesMatched.filter(item => item !== piecesShuffled[pieceIndex]));
+        setPiecesMatched(prevPiecesMatched => prevPiecesMatched.filter(item => item !== piecesShuffled[pieceIndex]));
       }
 
       const newPiecesUnrevealed = piecesUnrevealed.filter(item => item !== piecesShuffled[pieceIndex]);
@@ -82,7 +82,7 @@ export const App = ({ pieces }) => {
   );
 
   return (
-    <div className="appContainer">
+    <div className="app">
       <div className="gameArea">
         <div className="gameArea__pieces">
           {piecesShuffled.map((piece, index) => (
