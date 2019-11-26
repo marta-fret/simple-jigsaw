@@ -1,6 +1,7 @@
 export const EventTypes = {
   GameStart: 'gameStart',
   GameOver: 'gameOver',
-  WrongPiece: 'wrongPiece',
+  WrongPieceTouched: 'wrongPieceTouched',
+  WrongPieceReleased: 'wrongPieceRevealed',
   AppRestart: 'appRestart',
 };

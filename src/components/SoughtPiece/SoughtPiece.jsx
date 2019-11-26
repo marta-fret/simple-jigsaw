@@ -22,9 +22,9 @@ const SoughtPiece = ({ sougthPieces, onChange }) => {
 
   useEffect(() => {
     changeSoughtPiece();
-    EventBus.subscribe(EventTypes.WrongPiece, changeSoughtPiece);
+    EventBus.subscribe(EventTypes.WrongPieceReleased, changeSoughtPiece);
     return () => {
-      EventBus.unsubscribe(EventTypes.WrongPiece, changeSoughtPiece);
+      EventBus.unsubscribe(EventTypes.WrongPieceReleased, changeSoughtPiece);
     };
   }, [sougthPieces]);
 

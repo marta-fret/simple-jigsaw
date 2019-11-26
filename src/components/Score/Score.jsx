@@ -16,7 +16,7 @@ const Score = () => {
     );
   };
 
-  const onWrongPiece = () => {
+  const onWrongPieceTouched = () => {
     setScore(prevScore => prevScore + 10);
   };
 
@@ -29,12 +29,12 @@ const Score = () => {
 
   useEffect(() => {
     EventBus.subscribe(EventTypes.GameStart, startCounting);
-    EventBus.subscribe(EventTypes.WrongPiece, onWrongPiece);
+    EventBus.subscribe(EventTypes.WrongPieceTouched, onWrongPieceTouched);
     EventBus.subscribe(EventTypes.GameOver, stopCounting);
 
     return () => {
       EventBus.unsubscribe(EventTypes.GameStart, startCounting);
-      EventBus.unsubscribe(EventTypes.WrongPiece, onWrongPiece);
+      EventBus.unsubscribe(EventTypes.WrongPieceTouched, onWrongPieceTouched);
       EventBus.unsubscribe(EventTypes.GameOver, stopCounting);
       clearInterval(timer);
     };

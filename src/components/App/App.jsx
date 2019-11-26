@@ -20,13 +20,21 @@ export const App = ({ pieces }) => {
   const [piecesTargetCoords, setPiecesTargetCoords] = useState([]);
   const [soughtPiece, setSoughtPiece] = useState();
 
-  const onPieceTouched = (url) => {
+  const isPieceWrong = piece => piece !== soughtPiece && piecesUnrevealed.indexOf(piece) !== -1;
+
+  const onWrongPieceReleased = () => {
+    EventBus.emit(EventTypes.WrongPieceReleased);
+    document.body.removeEventListener('mouseup', onWrongPieceReleased);
+  };
+
+  const onPieceTouched = (piece) => {
     if (!gameStarted) {
       EventBus.emit(EventTypes.GameStart);
       setGameStarted(true);
     }
-    if (url !== soughtPiece && piecesUnrevealed.indexOf(url) !== -1) {
-      EventBus.emit(EventTypes.WrongPiece);
+    if (isPieceWrong(piece)) {
+      EventBus.emit(EventTypes.WrongPieceTouched);
+      document.body.addEventListener('mouseup', onWrongPieceReleased);
     }
   };
 
@@ -77,20 +85,20 @@ export const App = ({ pieces }) => {
     <div className="appContainer">
       <div className="gameArea">
         <div className="gameArea__pieces">
-          {piecesShuffled.map((url, index) => (
+          {piecesShuffled.map((piece, index) => (
             <div key={index}>
               <Piece
-                imageUrl={url}
+                imageUrl={piece}
                 index={index}                  
-                onMouseDown={() => onPieceTouched(url)}
-                canDrag={soughtPiece === url || !!piecesTargetCoords[index]}
+                onMouseDown={() => onPieceTouched(piece)}
+                canDrag={soughtPiece === piece || !!piecesTargetCoords[index]}
                 targetCoords={piecesTargetCoords[index]}
               />
             </div>
           ))}
         </div>
         <div className="gameArea__targets">
-          {piecesShuffled.map((url, index) => (
+          {piecesShuffled.map((piece, index) => (
             <PieceTarget
               onDrop={onDrop}
               index={index}
