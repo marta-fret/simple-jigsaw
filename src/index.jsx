@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './components/App/App.jsx';
+import { AppContainer } from './components/AppContainer.jsx';
 import 'normalize.css/normalize.css';
 import './styles/general.less';
 
@@ -12,4 +12,4 @@ const pieces = [
   'assets/zoovu-logo/5.png',
 ];
 
-ReactDOM.render(<App pieces={pieces} />, document.getElementById('app'));
+ReactDOM.render(<AppContainer pieces={pieces} />, document.getElementById('app'));

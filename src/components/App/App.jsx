@@ -1,6 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 import shuffle from 'lodash.shuffle';
 import Piece from '../Piece/Piece';
@@ -32,18 +30,27 @@ export const App = ({ pieces }) => {
     }
   };
 
-  const onSoughtPieceChanged = (piece) => {
-    setSoughtPiece(piece);
+  const onSoughtPieceChanged = useCallback(
+    (piece) => {
+      setSoughtPiece(piece);
+    }, [],
+  );
+    
+  const handleGameOver = () => {
+    EventBus.emit(EventTypes.GameOver);
+    setTimeout(() => {
+      EventBus.emit(EventTypes.AppRestart);
+    }, 3000);
   };
 
-  const handleDrop = useCallback(
+  const onDrop = useCallback(
     (pieceIndex, targetIndex, targetCoordinates) => {
       const isMatched = shuffledToOrdered[pieceIndex] === targetIndex;
 
       if (isMatched) {
         if (piecesMatched.indexOf(pieceIndex) !== -1) return;
         if (piecesMatched.length === piecesShuffled.length - 1) {
-          EventBus.emit(EventTypes.GameOver);
+          handleGameOver();
         }
         setPiecesMatched([...piecesMatched, piecesShuffled[pieceIndex]]);
       } else {
@@ -67,40 +74,38 @@ export const App = ({ pieces }) => {
   );
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="appContainer">
-        <div className="gameArea">
-          <div className="gameArea__pieces">
-            {piecesShuffled.map((url, index) => (
-              <div key={index}>
-                <Piece
-                  imageUrl={url}
-                  index={index}                  
-                  onMouseDown={() => onPieceTouched(url)}
-                  canDrag={soughtPiece === url || !!piecesTargetCoords[index]}
-                  targetCoords={piecesTargetCoords[index]}
-                />
-              </div>
-            ))}
-          </div>
-          <div className="gameArea__targets">
-            {piecesShuffled.map((url, index) => (
-              <PieceTarget
-                onDrop={handleDrop}
-                index={index}
-                key={index}
+    <div className="appContainer">
+      <div className="gameArea">
+        <div className="gameArea__pieces">
+          {piecesShuffled.map((url, index) => (
+            <div key={index}>
+              <Piece
+                imageUrl={url}
+                index={index}                  
+                onMouseDown={() => onPieceTouched(url)}
+                canDrag={soughtPiece === url || !!piecesTargetCoords[index]}
+                targetCoords={piecesTargetCoords[index]}
               />
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-        <div className="infoArea">
-          <Score />
-          <SoughtPiece 
-            sougthPieces={piecesUnrevealed}
-            onChange={onSoughtPieceChanged}
-          />
+        <div className="gameArea__targets">
+          {piecesShuffled.map((url, index) => (
+            <PieceTarget
+              onDrop={onDrop}
+              index={index}
+              key={index}
+            />
+          ))}
         </div>
       </div>
-    </DndProvider>
+      <div className="infoArea">
+        <Score />
+        <SoughtPiece 
+          sougthPieces={piecesUnrevealed}
+          onChange={onSoughtPieceChanged}
+        />
+      </div>
+    </div>
   );
 };
