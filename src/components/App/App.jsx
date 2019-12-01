@@ -48,7 +48,7 @@ export const App = ({ pieces }) => {
     EventBus.emit(EventTypes.GameOver);
     setTimeout(() => {
       EventBus.emit(EventTypes.AppRestart);
-    }, 3000);
+    }, 10000);
   };
 
   const onDrop = useCallback(
@@ -81,6 +81,17 @@ export const App = ({ pieces }) => {
     [piecesMatched, piecesUnrevealed, piecesTargetCoords],
   );
 
+  const checkIfCanDrop = useCallback(
+    piece => {
+      const dropBlocked = piecesUnrevealed.length === 1 
+        && piecesMatched.length !== piecesShuffled.length - 1
+        && piecesShuffled[piece.index] === piecesUnrevealed[0];
+
+      return !dropBlocked;  
+    },
+    [piecesMatched, piecesUnrevealed],
+  );
+
   return (
     <div className="app">
       <div className="gameArea">
@@ -101,6 +112,7 @@ export const App = ({ pieces }) => {
           {piecesShuffled.map((piece, index) => (
             <PieceTarget
               onDrop={onDrop}
+              checkIfCanDrop={checkIfCanDrop}
               index={index}
               key={index}
             />

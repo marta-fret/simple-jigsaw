@@ -47,7 +47,7 @@ const Score = () => {
         {score} <span className="score__unit">sec.</span>  
       </p>
       {showCongrats && (
-        <p>Congratulations :-)</p>
+        <p className="score__congrats">Congratulations :-)</p>
       )}
     </>
   );

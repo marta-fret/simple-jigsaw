@@ -6,11 +6,13 @@ import './pieceTarget.less';
 
 const PieceTarget = ({
   onDrop,
+  checkIfCanDrop,
   index,
 }) => {
   const ref = useRef(null);
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.Piece,
+    canDrop: checkIfCanDrop,
     drop(piece) {
       if (!ref.current) return;
       const hoverBoundingRect = ref.current.getBoundingClientRect();
@@ -24,14 +26,21 @@ const PieceTarget = ({
   drop(ref);
 
   const isActive = isOver && canDrop;
+  const isBlocked = isOver && !canDrop;
 
   return (
     <div
       ref={ref}
       className={classNames('pieceTarget', {
         'pieceTarget--isActive': isActive,
+        'pieceTarget--isBlocked': isBlocked,
       })}
     >
+      {isBlocked && (
+        <p className="pieceTarget__blockedInfo">
+          Correct the order of the pieces
+        </p>
+      )}
     </div>
   );
 };
