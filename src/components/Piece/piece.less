@@ -10,11 +10,11 @@
   left: 0;
   z-index: 100;
 
-  background-color: #3c0078;
+  background-color: rgb(60, 0, 120);
   border: 2px solid white;
 
   &--isRevealed {
-    background-color: grey;
+    background-color: #c7f072;
   }
 
   &--isDragging {
@@ -27,6 +27,11 @@
     img {
       visibility: hidden;
     }
+  }
+
+  &--isCorrect:active {
+    border: 2px solid #c7f072;
+    background-color: rgba(60, 0, 120, 0.5);
   }
 
   img {

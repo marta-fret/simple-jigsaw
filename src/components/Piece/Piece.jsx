@@ -4,9 +4,11 @@ import classNames from 'classnames';
 import { ItemTypes } from '../../common/ItemTypes';
 import './piece.less';
 
-const Piece = ({ imageUrl, onMouseDown, canDrag, index, targetCoords }) => {
-  const [style, setStyle] = useState({ top: 0, left: 0 }); 
- 
+const Piece = ({
+  imageUrl, onMouseDown, canDrag, index, targetCoords, 
+}) => {
+  const [style, setStyle] = useState({ top: 0, left: 0 });
+
   const ref = useRef(null);
   const [{ isDragging }, drag] = useDrag({
     item: { type: ItemTypes.Piece, index },
@@ -33,6 +35,7 @@ const Piece = ({ imageUrl, onMouseDown, canDrag, index, targetCoords }) => {
       className={classNames('piece', {
         'piece--isDragging': isDragging,
         'piece--isWrong': !canDrag,
+        'piece--isCorrect': canDrag && !isDragging,
         'piece--isRevealed': style.top !== 0,
       })}
       onMouseDown={onMouseDown}
