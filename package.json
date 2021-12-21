@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack --config ./webpack.config.prod.js",
     "start": "webpack-dev-server --config ./webpack.config.dev.js",
-    "lint": "eslint . --ext \".js,.jsx\""
+    "lint": "eslint . --ext \".js,.jsx\"",
+    "format": "prettier \"src/**/*.{js,jsx}\" --write"
   },
   "repository": {
     "type": "git",

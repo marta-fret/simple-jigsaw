@@ -3,10 +3,9 @@
     "browser": true
   },
   "extends": [
-    "airbnb-base", 
     "eslint:recommended",
-    "plugin:react/recommended"
-    // "plugin:prettier/recommended", 
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
   ],
   "parser": "babel-eslint",
   "rules": {
@@ -16,6 +15,6 @@
     "react/prop-types": "off",
     "import/prefer-default-export": "off",
     "arrow-parens": "off",
-    "no-trailing-spaces":"off"
+    "no-trailing-spaces": "off"
   }
 }

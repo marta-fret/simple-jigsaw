@@ -4,9 +4,7 @@ import classNames from 'classnames';
 import { ItemTypes } from '../../common/ItemTypes';
 import './piece.less';
 
-const Piece = ({
-  imageUrl, onMouseDown, canDrag, index, targetCoords, 
-}) => {
+const Piece = ({ imageUrl, onMouseDown, canDrag, index, targetCoords }) => {
   const [style, setStyle] = useState({ top: 0, left: 0 });
 
   const ref = useRef(null);
@@ -40,7 +38,7 @@ const Piece = ({
       })}
       onMouseDown={onMouseDown}
     >
-      <img src={imageUrl} alt="piece"/>
+      <img src={imageUrl} alt="piece" />
     </div>
   );
 };

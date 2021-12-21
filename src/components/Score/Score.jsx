@@ -10,10 +10,9 @@ const Score = () => {
 
   const startCounting = () => {
     if (timer) return;
-    timer = setInterval(
-      () => { setScore(prevScore => prevScore + 1); },
-      1000,
-    );
+    timer = setInterval(() => {
+      setScore(prevScore => prevScore + 1);
+    }, 1000);
   };
 
   const onWrongPieceTouched = () => {
@@ -44,11 +43,9 @@ const Score = () => {
     <>
       <h1 className="score__header">Score:</h1>
       <p className="score__value">
-        {score} <span className="score__unit">sec.</span>  
+        {score} <span className="score__unit">sec.</span>
       </p>
-      {showCongrats && (
-        <p className="score__congrats">Congratulations :-)</p>
-      )}
+      {showCongrats && <p className="score__congrats">Congratulations :-)</p>}
     </>
   );
 };

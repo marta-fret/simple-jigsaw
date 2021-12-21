@@ -12,4 +12,7 @@ const pieces = [
   'assets/zoovu-logo/5.png',
 ];
 
-ReactDOM.render(<AppContainer pieces={pieces} />, document.getElementById('app'));
+ReactDOM.render(
+  <AppContainer pieces={pieces} />,
+  document.getElementById('app'),
+);

@@ -4,11 +4,7 @@ import classNames from 'classnames';
 import { ItemTypes } from '../../common/ItemTypes';
 import './pieceTarget.less';
 
-const PieceTarget = ({
-  onDrop,
-  checkIfCanDrop,
-  index,
-}) => {
+const PieceTarget = ({ onDrop, checkIfCanDrop, index }) => {
   const ref = useRef(null);
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: ItemTypes.Piece,

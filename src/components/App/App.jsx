@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import update from 'immutability-helper';
 import shuffle from 'lodash.shuffle';
-import Piece from '../Piece/Piece';
-import PieceTarget from '../PieceTarget/PieceTarget';
-import Score from '../Score/Score';
-import SoughtPiece from '../SoughtPiece/SoughtPiece';
-import { EventBus } from './../../common/EventBus/EventBus';
-import { EventTypes } from './../../common/EventBus/EventTypes';
+import Piece from '../Piece/Piece.jsx';
+import PieceTarget from '../PieceTarget/PieceTarget.jsx';
+import Score from '../Score/Score.jsx';
+import SoughtPiece from '../SoughtPiece/SoughtPiece.jsx';
+import { EventBus } from '../../common/EventBus/EventBus';
+import { EventTypes } from '../../common/EventBus/EventTypes';
 import { mapIndexes } from '../../common/arrayUtils';
 import './app.less';
 
@@ -16,18 +16,19 @@ export const App = ({ pieces }) => {
   const [shuffledToOrdered] = useState(mapIndexes(piecesShuffled, pieces));
 
   const [piecesUnrevealed, setPiecesUnrevealed] = useState([...piecesShuffled]);
-  const [piecesMatched, setPiecesMatched] = useState([]); 
+  const [piecesMatched, setPiecesMatched] = useState([]);
   const [piecesTargetCoords, setPiecesTargetCoords] = useState([]);
   const [soughtPiece, setSoughtPiece] = useState();
 
-  const isPieceWrong = piece => piece !== soughtPiece && piecesUnrevealed.indexOf(piece) !== -1;
+  const isPieceWrong = piece =>
+    piece !== soughtPiece && piecesUnrevealed.indexOf(piece) !== -1;
 
   const onWrongPieceReleased = () => {
     EventBus.emit(EventTypes.WrongPieceReleased);
     document.body.removeEventListener('mouseup', onWrongPieceReleased);
   };
 
-  const onPieceTouched = (piece) => {
+  const onPieceTouched = piece => {
     if (!gameStarted) {
       EventBus.emit(EventTypes.GameStart);
       setGameStarted(true);
@@ -38,12 +39,10 @@ export const App = ({ pieces }) => {
     }
   };
 
-  const onSoughtPieceChanged = useCallback(
-    (piece) => {
-      setSoughtPiece(piece);
-    }, [],
-  );
-    
+  const onSoughtPieceChanged = useCallback(piece => {
+    setSoughtPiece(piece);
+  }, []);
+
   const handleGameOver = () => {
     EventBus.emit(EventTypes.GameOver);
     setTimeout(() => {
@@ -60,12 +59,19 @@ export const App = ({ pieces }) => {
         if (piecesMatched.length === piecesShuffled.length - 1) {
           handleGameOver();
         }
-        setPiecesMatched(prevPiecesMatched => [...prevPiecesMatched, piecesShuffled[pieceIndex]]);
+        setPiecesMatched(prevPiecesMatched => [
+          ...prevPiecesMatched,
+          piecesShuffled[pieceIndex],
+        ]);
       } else {
-        setPiecesMatched(prevPiecesMatched => prevPiecesMatched.filter(item => item !== piecesShuffled[pieceIndex]));
+        setPiecesMatched(prevPiecesMatched =>
+          prevPiecesMatched.filter(item => item !== piecesShuffled[pieceIndex]),
+        );
       }
 
-      const newPiecesUnrevealed = piecesUnrevealed.filter(item => item !== piecesShuffled[pieceIndex]);
+      const newPiecesUnrevealed = piecesUnrevealed.filter(
+        item => item !== piecesShuffled[pieceIndex],
+      );
       if (newPiecesUnrevealed.length !== piecesUnrevealed.length) {
         setPiecesUnrevealed(newPiecesUnrevealed);
       }
@@ -83,11 +89,12 @@ export const App = ({ pieces }) => {
 
   const checkIfCanDrop = useCallback(
     piece => {
-      const dropBlocked = piecesUnrevealed.length === 1 
-        && piecesMatched.length !== piecesShuffled.length - 1
-        && piecesShuffled[piece.index] === piecesUnrevealed[0];
+      const dropBlocked =
+        piecesUnrevealed.length === 1 &&
+        piecesMatched.length !== piecesShuffled.length - 1 &&
+        piecesShuffled[piece.index] === piecesUnrevealed[0];
 
-      return !dropBlocked;  
+      return !dropBlocked;
     },
     [piecesMatched, piecesUnrevealed],
   );
@@ -100,7 +107,7 @@ export const App = ({ pieces }) => {
             <div key={index}>
               <Piece
                 imageUrl={piece}
-                index={index}                  
+                index={index}
                 onMouseDown={() => onPieceTouched(piece)}
                 canDrag={soughtPiece === piece || !!piecesTargetCoords[index]}
                 targetCoords={piecesTargetCoords[index]}
@@ -121,7 +128,7 @@ export const App = ({ pieces }) => {
       </div>
       <div className="infoArea">
         <Score />
-        <SoughtPiece 
+        <SoughtPiece
           sougthPieces={piecesUnrevealed}
           onChange={onSoughtPieceChanged}
         />
